@@ -1,0 +1,13 @@
+login;nom;groupe_principal;groupes_secondaires
+komlan.djadou;Komlan DJADOU;admins;acces_ssh
+hugo.boukria;Hugo Boukria;admins;acces_ssh
+malek.boufaied;Malek Boufaied;admins;acces_ssh
+support;Compte support;support;acces_ssh
+technique1;Technicien 1;technique;
+technique2;Technicien 2;technique;
+chercheur1;Chercheur 1;chercheurs;
+chercheur2;Chercheur 2;chercheurs;
+doctorant1;Doctorant 1;doctorants;
+doctorant2;Doctorant 2;doctorants;
+invite1;Invité 1;invite;acces_ssh
+invite2;Invité 2;invite;acces_ssh
