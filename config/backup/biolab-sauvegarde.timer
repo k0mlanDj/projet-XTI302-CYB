@@ -1,0 +1,10 @@
+[Unit]
+Description=BioLab - sauvegarde quotidienne a 02h30
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+Unit=biolab-sauvegarde.service
+
+[Install]
+WantedBy=timers.target

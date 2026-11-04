@@ -1,0 +1,8 @@
+# Copier sous /etc/biolab-backup.conf (root:root, 0640).
+# Configurer l UUID releve APRES preparation manuelle et verification.
+BACKUP_MOUNT=/mnt/biolab-backups
+BACKUP_DEVICE=/dev/vdb1
+BACKUP_UUID=REMPLACER_PAR_UUID_REEL
+BACKUP_FSTYPE=ext4
+RETENTION_COUNT=7
+MIN_FREE_MIB=128

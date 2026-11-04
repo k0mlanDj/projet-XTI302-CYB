@@ -1,0 +1,15 @@
+[Unit]
+Description=BioLab - sauvegarde incrementalisee de /srv et /etc
+After=local-fs.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+UMask=0027
+ExecStart=/usr/local/sbin/biolab-sauvegarde
+TimeoutStartSec=2h
+NoNewPrivileges=true
+PrivateTmp=true
+# L acces en lecture a /srv et /etc, et en ecriture au disque dedie,
+# reste indispensable : ne pas appliquer ProtectSystem=strict sans adaptations.
