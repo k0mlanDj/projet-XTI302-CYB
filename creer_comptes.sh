@@ -195,6 +195,51 @@ traiter_utilisateurs() {
 }
 
 # Configuration des espaces de données BioLab (C2)
+
+# Installation des clés SSH publiques (C1)
+installer_cles_ssh() {
+    local repertoire_cles="$SCRIPT_DIR/config/ssh-keys"
+    local repertoire_cibles="/etc/ssh/authorized_keys"
+
+    local -A correspondance=(
+        [komlan.djadou]="komlan_djadou_ed25519.pub"
+        [hugo.boukria]="hugo_boukria_ed25519.pub"
+        [malek.boufaied]="malek_boufaied_ed25519.pub"
+        [support]="support_ed25519.pub"
+        [invite1]="invite1_ed25519.pub"
+        [invite2]="invite2_ed25519.pub"
+    )
+
+    command -v ssh-keygen >/dev/null 2>&1 || {
+        log "ERREUR : ssh-keygen absent."
+        return 1
+    }
+
+    install -d -o root -g root -m 755 "$repertoire_cibles"
+
+    for login in "${!correspondance[@]}"; do
+        local fichier="$repertoire_cles/${correspondance[$login]}"
+        local destination="$repertoire_cibles/$login"
+
+        if ! id "$login" >/dev/null 2>&1; then
+            log "ERREUR : compte SSH inexistant : $login"
+            return 1
+        fi
+
+        if [[ ! -f "$fichier" ]] || ! ssh-keygen -lf "$fichier" >/dev/null 2>&1; then
+            log "ERREUR : clé publique absente ou invalide : $fichier"
+            return 1
+        fi
+
+        install -o root -g root -m 600 "$fichier" "$destination"
+
+        log "Clé SSH installée pour : $login"
+    done
+
+    log "Installation des six clés SSH terminée."
+}
+
+
 configurer_repertoires_biolab() {
     local repertoire groupe
 
@@ -270,8 +315,15 @@ main() {
     # Création et mise à jour des comptes.
     traiter_utilisateurs
 
+    # Installation des clés publiques SSH (C1).
+    installer_cles_ssh
+
     # Configuration des répertoires et ACL (C2).
     configurer_repertoires_biolab
+
+    # Verrouillage du compte root (C4).
+    passwd -l root
+    log "Compte root verrouillé."
 
     log "Traitement des comptes terminé avec succès."
 }
