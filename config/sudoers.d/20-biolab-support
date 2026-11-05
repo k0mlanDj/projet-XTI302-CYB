@@ -1,0 +1,3 @@
+# Projet XTI302-CYB - C3
+# Le support peut uniquement lancer le script d'analyse des journaux.
+support ALL=(root) NOPASSWD: /usr/local/sbin/analyse_logs.sh
