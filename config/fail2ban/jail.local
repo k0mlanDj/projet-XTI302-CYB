@@ -1,0 +1,50 @@
+# ============================================================
+# Projet XTI302-CYB - Laboratoire BioLab
+# Fichier : config/fail2ban/jail.local
+# Installé dans : /etc/fail2ban/jail.local (root:root 0644)
+# Objectif : protection de SSH contre la force brute (J1)
+# ============================================================
+#
+# Ordre de lecture de fail2ban : jail.conf, jail.d/*.conf, jail.local,
+# jail.d/*.local. Ce fichier l'emporte donc sur jail.d/defaults-debian.conf.
+# Valeurs effectives : fail2ban-client get sshd <option>
+# Justification des valeurs : docs/JOURNAUX_FAIL2BAN.md, section J1.
+
+[DEFAULT]
+# Adresses jamais bannies : boucle locale et poste d'administration
+# (hôte libvirt = passerelle du réseau NAT 192.168.122.0/24, adresse
+# d'origine de toutes les connexions d'administration relevées).
+ignoreip = 127.0.0.1/8 ::1 192.168.122.1
+
+# Debian 13 n'installe pas rsyslog : pas de /var/log/auth.log.
+# fail2ban lit directement le journal systemd (paquet python3-systemd).
+backend = systemd
+
+# Bannissement par nftables, dans la table dédiée « inet f2b-table »
+# créée par fail2ban lui-même : fonctionne que nftables.service soit
+# actif ou non (seuls la commande nft et le noyau sont nécessaires).
+banaction = nftables-multiport
+banaction_allports = nftables-allports
+
+# Tolérance : 5 échecs en 10 minutes, bannissement d'une heure.
+maxretry = 5
+findtime = 10m
+bantime  = 1h
+
+# Récidive : la durée double à chaque nouveau bannissement de la même
+# adresse, dans la limite de 24 heures.
+bantime.increment = true
+bantime.maxtime   = 24h
+
+[sshd]
+enabled  = true
+port     = ssh
+filter   = sshd[mode=normal]
+backend  = systemd
+# Lignes de l'unité ssh.service uniquement (champ attribué par journald,
+# non falsifiable par un utilisateur local, contrairement à _COMM).
+# Également fixé dans filter.d/sshd.local.
+journalmatch = _SYSTEMD_UNIT=ssh.service
+maxretry = 5
+findtime = 10m
+bantime  = 1h

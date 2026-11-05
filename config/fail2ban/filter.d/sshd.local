@@ -1,0 +1,25 @@
+# ============================================================
+# Projet XTI302-CYB - Laboratoire BioLab
+# Fichier : config/fail2ban/filter.d/sshd.local
+# Installé dans : /etc/fail2ban/filter.d/sshd.local (root:root 0644)
+# Objectif : adapter le filtre sshd à Debian 13 / OpenSSH 10 (J1)
+# ============================================================
+#
+# Complète /etc/fail2ban/filter.d/sshd.conf sans le modifier.
+#
+# 1. Depuis OpenSSH 9.8, les lignes de connexion sont écrites par
+#    « sshd-session[PID] » (et « sshd-auth » en 10.0), plus par « sshd ».
+#    Le nom de démon attendu par le filtre est élargi en conséquence.
+#    Si la version Debian du filtre le gère déjà, cette valeur est
+#    simplement équivalente.
+# 2. Sous Debian, l'unité s'appelle ssh.service (et non sshd.service) :
+#    le filtre ne lit que les messages de cette unité.
+#
+# Vérification : fail2ban-client get sshd journalmatch
+#                fail2ban-regex <fichier d'exemple> sshd
+
+[DEFAULT]
+_daemon = sshd(?:-session|-auth)?
+
+[Init]
+journalmatch = _SYSTEMD_UNIT=ssh.service
