@@ -230,8 +230,7 @@ installer_cles_ssh() {
             log "ERREUR : clé publique absente ou invalide : $fichier"
             return 1
         fi
-
-        install -o root -g root -m 600 "$fichier" "$destination"
+	install -o root -g root -m 644 "$fichier" "$destination"
 
         log "Clé SSH installée pour : $login"
     done
